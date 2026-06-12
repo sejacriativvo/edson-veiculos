@@ -1,26 +1,222 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand — Edson Instagram gradient (#1F3554 → #080F1C) + logo indigo (#2E3192) */
+  --color-ink: #080f1c;
+  --color-ink-soft: #1f3554;
+  --color-navy: #1f3554;
+  --color-edson-1: #1f3554;
+  --color-edson-2: #080f1c;
+  --color-brand: #2e3192;
+  --color-brand-600: #3a40b5;
+  --color-brand-500: #4f5bd5;
+  --color-brand-400: #6d7bee;
+  --color-brand-300: #9aa4f5;
+  --color-accent: #c9a24b; /* refined gold for premium accents */
+
+  --color-paper: #f6f7fb;
+  --color-mist: #eef0f6;
+  --color-line: #e3e6f0;
+  --color-muted: #5b6079;
+
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Cantos mais arredondados em todo o site */
+  --radius-md: 0.55rem;
+  --radius-lg: 0.85rem;
+  --radius-xl: 1.15rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-xl2: 1.75rem;
+
+  --shadow-soft: 0 2px 8px rgba(10, 12, 28, 0.04), 0 12px 32px rgba(10, 12, 28, 0.06);
+  --shadow-lift: 0 8px 24px rgba(10, 12, 28, 0.08), 0 24px 60px rgba(26, 31, 75, 0.12);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--color-ink);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--color-line);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-mist);
+}
+::-webkit-scrollbar-thumb {
+  background: #c3c8db;
+  border-radius: 999px;
+  border: 3px solid var(--color-mist);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-400);
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .container-x {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 80rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-x {
+      padding-inline: 2rem;
+    }
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+  }
+  .glass-dark {
+    background: rgba(12, 14, 32, 0.5);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
+  }
+  /* Edson brand gradient (Instagram look) */
+  .bg-edson {
+    background: linear-gradient(155deg, #1f3554 0%, #101a30 48%, #080f1c 100%);
+  }
+  .bg-edson-radial {
+    background:
+      radial-gradient(120% 90% at 80% -10%, #243f63 0%, transparent 55%),
+      linear-gradient(160deg, #1f3554 0%, #0c1322 55%, #080f1c 100%);
+  }
+  /* Indigo aurora used in hero / CTA bands */
+  .aurora {
+    background:
+      radial-gradient(60% 60% at 12% 8%, rgba(79, 91, 213, 0.5) 0%, transparent 60%),
+      radial-gradient(50% 50% at 92% 18%, rgba(109, 123, 238, 0.4) 0%, transparent 55%),
+      radial-gradient(75% 75% at 72% 105%, rgba(46, 49, 146, 0.6) 0%, transparent 60%);
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .mask-fade-r {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-14px) }
+}
+.animate-float-slow { animation: float-slow 7s var(--ease-out-expo) infinite; }
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 22s linear infinite;
+  transform-origin: 80px 80px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow { animation: none; }
+}
+
+.seal-shine {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.45) 30deg,
+    transparent 70deg,
+    transparent 360deg
+  );
+  animation: spin-slow 5s linear infinite;
+  transform-origin: center;
+  mix-blend-mode: overlay;
+}
+@media (prefers-reduced-motion: reduce) {
+  .seal-shine { animation: none; }
+}
+
+@keyframes kenburns {
+  from { transform: scale(1) }
+  to { transform: scale(1.07) }
+}
+.animate-kenburns { animation: kenburns 26s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-kenburns { animation: none; }
+}
+
+/* Range slider — simulador de financiamento */
+.range-edson {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+.range-edson::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 3px solid var(--color-brand);
+  box-shadow: 0 4px 12px rgba(46, 49, 146, 0.4);
+  transition: transform 0.15s var(--ease-out-expo);
+}
+.range-edson::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.range-edson::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 3px solid var(--color-brand);
+  box-shadow: 0 4px 12px rgba(46, 49, 146, 0.4);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0) }
+  to { transform: translateX(-50%) }
+}
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+.marquee-track:hover .animate-marquee { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
 }
