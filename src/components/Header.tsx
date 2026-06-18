@@ -47,8 +47,8 @@ export function Header() {
     };
   }, [searchOpen]);
 
-  const transparent = isHome && !scrolled && !open;
-  const light = transparent;
+  const transparent = false;
+  const light = false;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">

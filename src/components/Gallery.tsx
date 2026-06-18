@@ -2,17 +2,20 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "@/components/Img";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 
 export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
+  const dragX = useMotionValue(0);
 
   const go = useCallback(
     (dir: number) => setActive((i) => (i + dir + fotos.length) % fotos.length),
     [fotos.length],
   );
+
+  useEffect(() => { dragX.set(0); }, [active, dragX]);
 
   useEffect(() => {
     if (!open) return;
@@ -31,10 +34,11 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="group relative aspect-[4/3] touch-pan-y overflow-hidden rounded-3xl bg-mist md:aspect-[16/10]">
+      <div className="group relative aspect-video touch-pan-y overflow-hidden rounded-3xl bg-paper md:aspect-[16/9]">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={active}
+            style={{ x: dragX }}
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -48,7 +52,7 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
               priority
               draggable={false}
               sizes="(max-width: 1024px) 100vw, 60vw"
-              className="select-none object-cover"
+              className="select-none object-contain"
             />
           </motion.div>
         </AnimatePresence>
@@ -61,7 +65,10 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.18}
             dragSnapToOrigin
+            style={{ x: dragX }}
+            onDrag={(_, info) => { dragX.set(info.offset.x); }}
             onDragEnd={(_, info) => {
+              dragX.set(0);
               if (info.offset.x < -60 || info.velocity.x < -400) go(1);
               else if (info.offset.x > 60 || info.velocity.x > 400) go(-1);
             }}
@@ -93,7 +100,7 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
             <button
               key={f}
               onClick={() => setActive(i)}
-              className={`relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-xl transition-all ${
+              className={`relative aspect-video w-24 shrink-0 overflow-hidden rounded-xl transition-all ${
                 i === active
                   ? "ring-2 ring-brand-500 ring-offset-2"
                   : "opacity-60 hover:opacity-100"
