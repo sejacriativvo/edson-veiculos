@@ -2,20 +2,35 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "@/components/Img";
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
+
+const SWIPE_DIST = 60;
+const SWIPE_VEL = 400;
+
+const slideVariants = {
+  enter: (dir: number) => ({ x: dir >= 0 ? "100%" : "-100%", opacity: 0 }),
+  center: { x: "0%", opacity: 1 },
+  exit: (dir: number) => ({ x: dir >= 0 ? "-100%" : "100%", opacity: 0 }),
+};
+
+const slideTrans = {
+  x: { type: "spring", stiffness: 280, damping: 28, mass: 0.8 },
+  opacity: { duration: 0.12 },
+};
 
 export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
   const [active, setActive] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [open, setOpen] = useState(false);
-  const dragX = useMotionValue(0);
 
   const go = useCallback(
-    (dir: number) => setActive((i) => (i + dir + fotos.length) % fotos.length),
+    (dir: number) => {
+      setDirection(dir);
+      setActive((i) => (i + dir + fotos.length) % fotos.length);
+    },
     [fotos.length],
   );
-
-  useEffect(() => { dragX.set(0); }, [active, dragX]);
 
   useEffect(() => {
     if (!open) return;
@@ -32,18 +47,31 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
     };
   }, [open, go]);
 
+  const handleDragEnd = useCallback(
+    (_: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
+      if (info.offset.x < -SWIPE_DIST || info.velocity.x < -SWIPE_VEL) go(1);
+      else if (info.offset.x > SWIPE_DIST || info.velocity.x > SWIPE_VEL) go(-1);
+    },
+    [go],
+  );
+
   return (
     <div className="flex flex-col gap-3">
       <div className="group relative aspect-video touch-pan-y overflow-hidden rounded-3xl bg-paper md:aspect-[16/9]">
-        <AnimatePresence mode="popLayout" initial={false}>
+        <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={active}
-            style={{ x: dragX }}
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0"
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={slideTrans}
+            drag={fotos.length > 1 ? "x" : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            className="absolute inset-0 cursor-grab active:cursor-grabbing"
           >
             <Image
               src={fotos[active]}
@@ -52,28 +80,10 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
               priority
               draggable={false}
               sizes="(max-width: 1024px) 100vw, 60vw"
-              className="select-none object-contain"
+              className="pointer-events-none select-none object-contain"
             />
           </motion.div>
         </AnimatePresence>
-
-        {/* camada de arraste — deslizar pro lado troca a foto */}
-        {fotos.length > 1 && (
-          <motion.div
-            className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.18}
-            dragSnapToOrigin
-            style={{ x: dragX }}
-            onDrag={(_, info) => { dragX.set(info.offset.x); }}
-            onDragEnd={(_, info) => {
-              dragX.set(0);
-              if (info.offset.x < -60 || info.velocity.x < -400) go(1);
-              else if (info.offset.x > 60 || info.velocity.x > 400) go(-1);
-            }}
-          />
-        )}
 
         <button
           onClick={() => setOpen(true)}
@@ -99,7 +109,10 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
           {fotos.map((f, i) => (
             <button
               key={f}
-              onClick={() => setActive(i)}
+              onClick={() => {
+                setDirection(i > active ? 1 : -1);
+                setActive(i);
+              }}
               className={`relative aspect-video w-24 shrink-0 overflow-hidden rounded-xl transition-all ${
                 i === active
                   ? "ring-2 ring-brand-500 ring-offset-2"
@@ -123,28 +136,42 @@ export function Gallery({ fotos, alt }: { fotos: string[]; alt: string }) {
           >
             <button
               aria-label="Fechar"
-              className="absolute right-5 top-5 inline-flex size-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+              className="absolute right-5 top-5 z-10 inline-flex size-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
             >
               <X className="size-6" />
             </button>
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              drag={fotos.length > 1 ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.18}
-              dragSnapToOrigin
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -60 || info.velocity.x < -400) go(1);
-                else if (info.offset.x > 60 || info.velocity.x > 400) go(-1);
-              }}
-              className="relative h-[80vh] w-full max-w-5xl cursor-grab active:cursor-grabbing"
+
+            <div
+              className="relative h-[80vh] w-full max-w-5xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image src={fotos[active]} alt={alt} fill draggable={false} sizes="90vw" className="select-none object-contain" />
-            </motion.div>
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  key={active}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={slideTrans}
+                  drag={fotos.length > 1 ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                >
+                  <Image
+                    src={fotos[active]}
+                    alt={alt}
+                    fill
+                    draggable={false}
+                    sizes="90vw"
+                    className="pointer-events-none select-none object-contain"
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
             {fotos.length > 1 && (
               <>
                 <NavBtn side="left" onClick={() => go(-1)} light onPointerDown={(e) => e.stopPropagation()} />
