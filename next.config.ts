@@ -5,8 +5,7 @@ const nextConfig: NextConfig = {
   basePath: "/edson-veiculos",
   trailingSlash: true,
   images: {
-    loader: "custom",
-    loaderFile: "./src/lib/image-loader.ts",
+    unoptimized: true,
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: "/edson-veiculos",

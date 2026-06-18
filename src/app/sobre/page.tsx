@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Image from "@/components/Img";
 import { Award, HeartHandshake, ShieldCheck, Users, ArrowRight } from "lucide-react";
 import { site, whatsappLink } from "@/data/site";
 import { veiculos } from "@/data/veiculos";

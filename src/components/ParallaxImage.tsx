@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
+import Image from "@/components/Img";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 
 export function ParallaxImage({

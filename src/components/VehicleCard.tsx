@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/Img";
 import { Gauge, Calendar, Fuel, Settings2, ArrowUpRight, Zap } from "lucide-react";
 import type { Veiculo } from "@/data/veiculos";
 import { formatBRL, formatKM } from "@/lib/format";

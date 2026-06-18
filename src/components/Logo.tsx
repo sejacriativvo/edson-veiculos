@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/Img";
 import Link from "next/link";
 
 export function Logo({ light = false, className = "" }: { light?: boolean; className?: string }) {

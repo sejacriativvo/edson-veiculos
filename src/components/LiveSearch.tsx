@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import Image from "@/components/Img";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, X, ArrowRight, CornerDownLeft } from "lucide-react";
 import { veiculos } from "@/data/veiculos";

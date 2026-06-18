@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/Img";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "motion/react";
 import { team } from "@/data/site";
 
