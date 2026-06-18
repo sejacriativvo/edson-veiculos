@@ -33,7 +33,7 @@ export default function Home() {
     <>
       {/* ---------------- HERO (foto real da loja) ---------------- */}
       <section className="relative z-30 flex min-h-[88svh] flex-col justify-end bg-ink pt-[72px] text-white md:pt-20">
-        <ParallaxImage src="/loja/fachada-lateral.jpg" alt="Fachada da Edson Veículos em Araras" />
+        <ParallaxImage src="/loja/fachada-lateral.jpg" alt="Fachada da Edson Veículos em Araras" className="object-cover object-top" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
 
         <div className="container-x relative pb-12 md:pb-16">
