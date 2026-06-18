@@ -30,11 +30,11 @@ const sortOptions = [
 export function EstoqueClient({
   veiculos,
   marcas,
-  initial,
+  initial = {},
 }: {
   veiculos: Veiculo[];
   marcas: string[];
-  initial: Initial;
+  initial?: Initial;
 }) {
   const [q, setQ] = useState(initial.q ?? "");
   const [marca, setMarca] = useState(initial.marca ?? "");

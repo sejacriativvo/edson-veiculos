@@ -7,13 +7,7 @@ export const metadata: Metadata = {
   description: "Confira todos os veículos disponíveis na Edson Veículos. Filtre por marca, preço e câmbio.",
 };
 
-export default async function EstoquePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ q?: string; marca?: string; precoMax?: string }>;
-}) {
-  const sp = await searchParams;
-
+export default function EstoquePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-edson-radial pt-28 text-white lg:pt-36">
@@ -33,11 +27,7 @@ export default async function EstoquePage({
 
       <section className="bg-paper py-12 md:py-16">
         <div className="container-x">
-          <EstoqueClient
-            veiculos={veiculos}
-            marcas={marcas}
-            initial={{ q: sp.q, marca: sp.marca, precoMax: sp.precoMax }}
-          />
+          <EstoqueClient veiculos={veiculos} marcas={marcas} />
         </div>
       </section>
     </>
