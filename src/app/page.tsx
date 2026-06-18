@@ -32,47 +32,29 @@ export default function Home() {
   return (
     <>
       {/* ---------------- HERO (foto real da loja) ---------------- */}
-      <section className="relative z-30 bg-ink pt-[72px] text-white md:pt-20">
+      <section className="relative z-30 flex min-h-[88svh] flex-col justify-end bg-ink pt-[72px] text-white md:pt-20">
         <ParallaxImage src="/loja/fachada-lateral.jpg" alt="Fachada da Edson Veículos em Araras" />
-        {/* degradê da esquerda pra direita: escurece o lado do texto, libera a loja à direita */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/45 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent" />
 
-        <div className="container-x relative pb-12 pt-14 md:pb-16 md:pt-20">
-          <div className="max-w-2xl">
-            <Reveal>
-              <h1 className="font-display text-[2.7rem] font-bold leading-[1.04] tracking-tight text-balance sm:text-5xl lg:text-[4rem]">
-                O carro certo, com a confiança de quem é{" "}
-                <span className="bg-gradient-to-r from-brand-300 to-white bg-clip-text text-transparent">
-                  da sua região.
-                </span>
-              </h1>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/75">
-                Estoque selecionado, procedência garantida e financiamento aprovado na hora. Há mais de 30 anos
-                realizando o sonho do carro novo em Araras e região.
-              </p>
-            </Reveal>
-            <Reveal delay={0.24}>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href="/estoque" variant="primary" size="lg">
-                  Ver estoque
-                  <ArrowRight className="size-5 transition-transform group-hover:translate-x-0.5" />
-                </ButtonLink>
-                <ButtonLink
-                  href={whatsappLink(`Olá! Vim pelo site da ${site.name} e quero atendimento.`)}
-                  external
-                  variant="whatsapp"
-                  size="lg"
-                >
-                  Falar com vendedor
-                </ButtonLink>
-              </div>
-            </Reveal>
-          </div>
+        <div className="container-x relative pb-12 md:pb-16">
+          <Reveal>
+            <div className="flex flex-wrap gap-3">
+              <ButtonLink href="/estoque" variant="primary" size="lg">
+                Ver estoque
+                <ArrowRight className="size-5 transition-transform group-hover:translate-x-0.5" />
+              </ButtonLink>
+              <ButtonLink
+                href={whatsappLink(`Olá! Vim pelo site da ${site.name} e quero atendimento.`)}
+                external
+                variant="whatsapp"
+                size="lg"
+              >
+                Falar com vendedor
+              </ButtonLink>
+            </div>
+          </Reveal>
 
-          <Reveal delay={0.32} className="mt-10 md:mt-12">
+          <Reveal delay={0.16} className="mt-5">
             <SearchHero marcas={marcas} />
           </Reveal>
         </div>
